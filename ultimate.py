@@ -70,17 +70,17 @@ class BigGrid():
                                    (xCenter+66,yCenter-66),12)
         self.listy[bRow][bColumn] = player_piece
 
-    def clickedy(self,board):
-        (mX,mY) = pygame.mouse.get_pos()
-        (row,column) = self.position(mX,mY)
-        if self.listy[row][column] == 'X' or self.listy[row][column] == 'O':
-            return
-        self.moveDraw(board,row,column,self.xo)
-
-        if self.xo == 'X':
-            self.xo = 'O'
-        else:
-            self.xo = 'X'
+    # def clickedy(self, board):
+    #     (mX,mY) = pygame.mouse.get_pos()
+    #     (row,column) = self.position(mX,mY)
+    #     if self.listy[row][column] == 'X' or self.listy[row][column] == 'O':
+    #         return
+    #     self.moveDraw(board,row,column,self.xo)
+    #
+    #     if self.xo == 'X':
+    #         self.xo = 'O'
+    #     else:
+    #         self.xo = 'X'
 
     def winnerwinnerchickendinner(self,board):
         for row in range(0,3):
@@ -116,12 +116,15 @@ class lilGrid():
     def __init__(self, listy=[[None,None,None], \
                               [None,None,None], \
                               [None,None,None]],
-                              xo='X', winner = None, counter = 0):
+                              xo='X', winner = None, counter = 0, \
+                              xstart=1, ystart=1):
         #self.background = background
         self.listy = listy
         self.xo = xo
         self.winner = winner
         self.counter = counter
+        self.xstart = xstart
+        self.ystart = ystart
 
     def make_board(self,board_size,board,startx,starty):
         background = pygame.Surface(board_size.get_size())
@@ -139,19 +142,19 @@ class lilGrid():
 
         return background
 
-    def status(self,board):
-        if self.winner == None:
-            message = self.xo + "'s turn"
-        else:
-            message = self.winner + " wins YEET"
-        font = pygame.font.Font(None, 24)
-        text = font.render(message, 1, (10,10,10))
-
-        board.fill ((250,250,250), (0,300,300,25))
-        board.blit(text, (10,300))
+    # def status(self,board):
+    #     if self.winner == None:
+    #         message = self.xo + "'s turn"
+    #     else:
+    #         message = self.winner + " wins YEET"
+    #     font = pygame.font.Font(None, 24)
+    #     text = font.render(message, 1, (10,10,10))
+    #
+    #     board.fill ((250,250,250), (0,300,300,25))
+    #     board.blit(text, (10,300))
 
     def showBoard(self,board_size,board):
-        self.status(board)
+        #self.status(board)
         board_size.blit(board, (0,0))
         pygame.display.flip()
 
@@ -170,9 +173,11 @@ class lilGrid():
             column = 2
         return (row,column)
 
-    def moveDraw(self,board, bRow, bColumn, player_piece):
-        xCenter = ((bColumn)*100)+50
-        yCenter = ((bRow)*100)+50
+    def moveDraw(self,board, bRow, bColumn, player_piece):#,xstart,ystart):
+        #xadd = (xstart-1)*300
+        #yadd = (ystart-1)*300
+        xCenter = ((bColumn)*100)+50# + xadd
+        yCenter = ((bRow)*100)+50# + yadd
         if (player_piece == 'O'):
             pygame.draw.circle(board, (0,0,250),(xCenter,yCenter),30,12)
         else:
@@ -185,6 +190,7 @@ class lilGrid():
     def clickedy(self,board):
         (mX,mY) = pygame.mouse.get_pos()
         (row,column) = self.position(mX,mY)
+        #statement below makes sure the box isn't already used
         if self.listy[row][column] == 'X' or self.listy[row][column] == 'O':
             return
         self.moveDraw(board,row,column,self.xo)
@@ -292,7 +298,7 @@ while (running == 1):
             running = 0
         elif event.type is MOUSEBUTTONDOWN:
             # the user clicked; place an X or O
-            BigBoi.clickedy(board)
+            #BigBoi.clickedy(board)
             lil1.clickedy(board)
             lil2.clickedy(board)
             lil3.clickedy(board)
