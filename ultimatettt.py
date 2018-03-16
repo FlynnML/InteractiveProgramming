@@ -15,20 +15,19 @@ class BigGrid():
                               xo='X', winner = None, winsquare = [[0,0,0], \
                                                                   [0,0,0], \
                                                                   [0,0,0]]):
-        #self.background = background
         self.listy = listy
         self.xo = xo
         self.winner = winner
         self.winsquare = winsquare
 
     def make_board(self,board_size,board):
+        """Creates the pygame Ultimate Tic-Tac-Toe board"""
         background = pygame.Surface(board_size.get_size())
         background = background.convert()
-        #background.fill(255,255,255)
-        #vert
+        #vertical lines
         pygame.draw.line(board, (0,0,0),(300,0),(300,900), 5)
         pygame.draw.line(board, (0,0,0),(600,0),(600,900), 5)
-        #horiz
+        #horizontal lines
         pygame.draw.line(board, (0,0,0),(0,300),(900,300), 5)
         pygame.draw.line(board, (0,0,0),(0,600),(900,600), 5)
 
@@ -47,6 +46,7 @@ class BigGrid():
         return background
 
     def status(self,board):
+        """Mentions which player's turn it is since it's easy to lose track"""
         if self.winner == None:
             message = self.xo + "'s turn"
         else:
@@ -63,6 +63,7 @@ class BigGrid():
         pygame.display.flip()
 
     def position(self, mX, mY):
+        """Converts mouse click position into rows and columns on the board"""
         if mY < 100:
             row = 0
         elif mY < 200:
@@ -103,6 +104,7 @@ class BigGrid():
         return (row,column)
 
     def moveDraw(self,board, bRow, bColumn, player_piece):
+        """Places small X's and O's on the board after being called by clickedy"""
         xCenter = ((bColumn)*100)+50
         yCenter = ((bRow)*100)+50
         if (player_piece == 'O'):
@@ -115,6 +117,7 @@ class BigGrid():
         self.listy[bRow][bColumn] = player_piece
 
     def clickedy(self,board):
+        """Recieves the mouse click from the main body and changes turns """
         (mX,mY) = pygame.mouse.get_pos()
         #print(mX,mY)
         (row,column) = self.position(mX,mY)
@@ -128,6 +131,11 @@ class BigGrid():
             self.xo = 'X'
 
     def winnerwinnerchickendinner(self,board):
+        """
+        This is the big one.
+        First, it finds who wins the small grids by parsing for vertical, horizontal, and diagonal 3-in-a-rows.
+        Then it does the same thing for the large boards after the small ones have been won.
+        """
         #horiz lil wins
         for h in range(9):
             for j in range(3):
@@ -249,9 +257,10 @@ class BigGrid():
             pygame.draw.line (board, (255,136,0), (900, 0), (0, 900), 20)
 
 
+"""
+This here is the start of the main loop! Woo!
+"""
 
-
-#yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 simple = BigGrid()
 
 pygame.init()
