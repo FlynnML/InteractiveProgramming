@@ -159,18 +159,22 @@ class lilGrid():
         pygame.display.flip()
 
     def position(self, mX, mY):
-        if mY < 100:
+        if mY < (100 + ((self.xstart-1)*300)):
             row = 0
-        elif mY < 200:
+        elif mY < (200 + ((self.ystart-1)*300)):
             row = 1
-        else:
+        elif mY < 300:
             row = 2
-        if mX < 100:
+        elif mY < 400:
+            row = 3
+        if mX < (100 + ((self.xstart-1)*300)):
             column = 0
-        elif mX < 200:
+        elif mX < (200 + ((self.xstart-1)*300)):
             column = 1
-        else:
+        elif mX < 300:
             column = 2
+        elif mX <400:
+            column = 3
         return (row,column)
 
     def moveDraw(self,board, bRow, bColumn, player_piece):#,xstart,ystart):
