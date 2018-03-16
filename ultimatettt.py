@@ -3,21 +3,23 @@ from pygame.locals import *
 
 class BigGrid():
 
-    def __init__(self, listy=[[None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None], \
-                              [None,None,None], [None,None,None], [None,None,None]], \
-                              xo='X', winner = None, counter = 0):
+    def __init__(self, listy=[[None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None], \
+                              [None,None,None,None,None,None,None,None,None]], \
+                              xo='X', winner = None, winsquare = [[0,0,0], \
+                                                                  [0,0,0], \
+                                                                  [0,0,0]]):
         #self.background = background
         self.listy = listy
         self.xo = xo
         self.winner = winner
-        self.counter = counter
+        self.winsquare = winsquare
 
     def make_board(self,board_size,board):
         background = pygame.Surface(board_size.get_size())
@@ -101,8 +103,8 @@ class BigGrid():
         return (row,column)
 
     def moveDraw(self,board, bRow, bColumn, player_piece):
-        xCenter = ((bColumn)*300)+150
-        yCenter = ((bRow)*300)+150
+        xCenter = ((bColumn)*100)+50
+        yCenter = ((bRow)*100)+50
         if (player_piece == 'O'):
             pygame.draw.circle(board, (0,0,250),(xCenter,yCenter),30,12)
         else:
@@ -114,6 +116,7 @@ class BigGrid():
 
     def clickedy(self,board):
         (mX,mY) = pygame.mouse.get_pos()
+        #print(mX,mY)
         (row,column) = self.position(mX,mY)
         if self.listy[row][column] == 'X' or self.listy[row][column] == 'O':
             return
@@ -125,33 +128,128 @@ class BigGrid():
             self.xo = 'X'
 
     def winnerwinnerchickendinner(self,board):
-        for row in range(0,3):
-            if self.listy[row][0] == self.listy[row][1] == self.listy[row][2] \
-               and self.listy[row][0] != None and self.counter == 0:
-               self.winner = self.listy[row][0]
-               self.counter += 1
-               pygame.draw.line (board, (250,0,0), (0,3*((row+1)*100 -50)), (900,3*((row+1)*100 - 50)),6)
-               break
-        for column in range(0,3):
-            if self.listy[0][column] == self.listy[1][column] == self.listy[2][column] \
-               and self.listy[0][column] != None and self.counter == 0:
-               self.winner = self.listy[0][column]
-               self.counter += 1
-               pygame.draw.line (board, (250,0,0), (3*((column+1)*100 -50), 0), (3*((column+1)*100 - 50), 900),6)
-               break
-        if self.listy[0][0] == self.listy[1][1] == self.listy[2][2] and \
-           self.listy[0][0] != None and self.counter == 0:
-            # diagonal left to right
-            self.winner = self.listy[0][0]
-            self.counter += 1
-            pygame.draw.line (board, (250,0,0), (0, 0), (900, 900), 6)
+        #horiz lil wins
+        for h in range(9):
+            for j in range(3):
+                if self.listy[h][3*j]=='X' and self.listy[h][3*j+1]=='X' and self.listy[h][3*j+2]=='X' and self.winsquare[h//3][j] == 0:
 
-        if self.listy[0][2] == self.listy[1][1] == self.listy[2][0] and \
-           self.listy[0][2] != None and self.counter == 0:
-            # diagonal right to left
-            self.winner = self.listy[0][2]
-            self.counter += 1
-            pygame.draw.line (board, (250,0,0), (900, 0), (0, 900), 6)
+                    self.winsquare[h//3][j] += 1
+                    pygame.draw.line (board, (250,0,0), (15+(300*j),50+(100*h)), (285+(300*j),50+(100*h)), 15)
+                    xCenter = 150 + 300*j
+                    yCenter = 150 + 300*(h//3)
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter-100), \
+                                           (xCenter+100,yCenter+100),7)
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter+100), \
+                                           (xCenter+100,yCenter-100),7)
+                elif self.listy[h][3*j]=='O' and self.listy[h][3*j+1]=='O' and self.listy[h][3*j+2]=='O' and self.winsquare[h//3][j] == 0:
+
+                    self.winsquare[h//3][j] += 2
+                    pygame.draw.line (board, (250,0,0), (15+(300*j),50+(100*h)), (285+(300*j),50+(100*h)), 15)
+                    xCenter = 150 + 300*j
+                    yCenter = 150 + 300*(h//3)
+                    pygame.draw.circle(board, (145,255,187),(xCenter,yCenter),120,7)
+        #vert lil wins
+        for h in range(9):
+            for j in range(3):
+                if self.listy[3*j][h]=='X' and self.listy[3*j+1][h]=='X' and self.listy[3*j+2][h]=='X' and self.winsquare[j][h//3] == 0:
+
+                    self.winsquare[j][h//3] += 1
+                    pygame.draw.line (board, (250,0,0), (50+(100*h),15+(300*j)), (50+(100*h),285+(300*j)), 15)
+                    xCenter = 150 + 300*(h//3)
+                    yCenter = 150 + 300*j
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter-100), \
+                                           (xCenter+100,yCenter+100),7)
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter+100), \
+                                           (xCenter+100,yCenter-100),7)
+                elif self.listy[3*j][h]=='O' and self.listy[3*j+1][h]=='O' and self.listy[3*j+2][h]=='O' and self.winsquare[j][h//3] == 0:
+
+                    self.winsquare[j][h//3] += 2
+                    pygame.draw.line (board, (250,0,0), (50+(100*h),15+(300*j)), (50+(100*h),285+(300*j)), 15)
+                    xCenter = 150 + 300*(h//3)
+                    yCenter = 150 + 300*j
+                    pygame.draw.circle(board, (145,255,187),(xCenter,yCenter),120,7)
+        #l to r diag wins
+        for h in range(3):
+            for j in range(3):
+                if self.listy[3*h][3*j]=='X' and self.listy[3*h+1][3*j+1]=='X' and self.listy[3*h+2][3*j+2]=='X' and self.winsquare[h][j] == 0:
+
+                    pygame.draw.line (board, (250,0,0), (15+(300*j),15+(300*h)), (285+(300*j),285+(300*h)), 15)
+                    self.winsquare[h][j] += 1
+                    xCenter = 150 + 300*(j)
+                    yCenter = 150 + 300*h
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter-100), \
+                                           (xCenter+100,yCenter+100),7)
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter+100), \
+                                           (xCenter+100,yCenter-100),7)
+
+
+                elif self.listy[3*h][3*j]=='O' and self.listy[3*h+1][3*j+1]=='O' and self.listy[3*h+2][3*j+2]=='O' and self.winsquare[h][j] == 0:
+
+                    pygame.draw.line (board, (250,0,0), (15+(300*j),15+(300*h)), (285+(300*j),285+(300*h)), 15)
+                    self.winsquare[h][j] += 2
+                    xCenter = 150 + 300*(j)
+                    yCenter = 150 + 300*h
+                    pygame.draw.circle(board, (145,255,187),(xCenter,yCenter),120,7)
+
+        #r to l diag wins
+        for h in range(3):
+            for j in range(3):
+                if self.listy[3*h+2][3*j]=='X' and self.listy[3*h+1][3*j+1]=='X' and self.listy[3*h][3*j+2]=='X' and self.winsquare[h][j] == 0:
+
+                    pygame.draw.line (board, (250,0,0), (285+(300*j),15+(300*h)), (15+(300*j),285+(300*h)), 15)
+                    self.winsquare[h][j] += 1
+                    xCenter = 150 + 300*(h)
+                    yCenter = 150 + 300*j
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter-100), \
+                                           (xCenter+100,yCenter+100),7)
+                    pygame.draw.line(board,(232,132,255),(xCenter-100,yCenter+100), \
+                                           (xCenter+100,yCenter-100),7)
+
+                elif self.listy[3*h+2][3*j]=='O' and self.listy[3*h+1][3*j+1]=='O' and self.listy[3*h][3*j+2]=='O' and self.winsquare[h][j] == 0:
+
+                    pygame.draw.line (board, (250,0,0), (285+(300*j),15+(300*h)), (15+(300*j),285+(300*h)), 15)
+                    self.winsquare[h][j] += 2
+                    xCenter = 150 + 300*(h)
+                    yCenter = 150 + 300*j
+                    pygame.draw.circle(board, (145,255,187),(xCenter,yCenter),120,7)
+
+        #BIG ROW WIN
+        for i in range(3):
+            if self.winsquare[0][i] == 1 and self.winsquare[1][i] == 1 and self.winsquare[2][i] == 1 and self.winner == None:
+                self.winner = 'X'
+                pygame.draw.line (board, (255,136,0), (150+(i*300),0), (150+(i*300),900),20)
+            elif self.winsquare[0][i] == 2 and self.winsquare[1][i] == 2 and self.winsquare[2][i] == 2 and self.winner == None:
+                self.winner = 'O'
+                pygame.draw.line (board, (255,136,0), (150+(i*300),0), (150+(i*300),900),20)
+        #BIG COL WIN
+        for i in range(3):
+            if self.winsquare[i][0] == 1 and self.winsquare[i][1] == 1 and self.winsquare[i][2] == 1 and self.winner == None:
+                self.winner = 'X'
+                pygame.draw.line (board, (255,136,0), (0,150+(i*300)), (900,150+(i*300)),20)
+            elif self.winsquare[i][0] == 2 and self.winsquare[i][1] == 2 and self.winsquare[i][2] == 2 and self.winner == None:
+                self.winner = 'O'
+                pygame.draw.line (board, (255,136,0), (0,150+(i*300)), (900,150+(i*300)),20)
+
+        #BIG L TO R DIAG WIN
+        if self.winsquare[0][0] == 1 and self.winsquare[1][1] == 1 and self.winsquare[2][2] == 1 and self.winner == None:
+            self.winner = 'X'
+            pygame.draw.line (board, (255,136,0), (0, 0), (900, 900), 20)
+        elif self.winsquare[0][0] == 2 and self.winsquare[1][1] == 2 and self.winsquare[2][2] == 2 and self.winner == None:
+            self.winner = 'O'
+            pygame.draw.line (board, (255,136,0), (0, 0), (900, 900), 20)
+
+
+
+        #BIG R TO L DIAG WIN
+        if self.winsquare[0][2] == 1 and self.winsquare[1][1] == 1 and self.winsquare[2][0] == 1 and self.winner == None:
+            self.winner = 'X'
+            pygame.draw.line (board, (255,136,0), (900, 0), (0, 900), 20)
+        elif self.winsquare[0][2] == 2 and self.winsquare[1][1] == 2 and self.winsquare[2][0] == 2 and self.winner == None:
+            self.winner = 'O'
+            pygame.draw.line (board, (255,136,0), (900, 0), (0, 900), 20)
+
+
+
 
 #yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 simple = BigGrid()
