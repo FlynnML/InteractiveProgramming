@@ -79,12 +79,25 @@ class BigGrid():
             row = 7
         else:
             row = 8
-        if mX < 300:
+
+        if mX < 100:
             column = 0
-        elif mX < 600:
+        elif mX < 200:
             column = 1
-        else:
+        elif mX < 300:
             column = 2
+        elif mX < 400:
+            column = 3
+        elif mX < 500:
+            column = 4
+        elif mX < 600:
+            column = 5
+        elif mX < 700:
+            column = 6
+        elif mX < 800:
+            column = 7
+        else:
+            column = 8
         return (row,column)
 
     def moveDraw(self,board, bRow, bColumn, player_piece):
